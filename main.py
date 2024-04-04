@@ -1,5 +1,19 @@
+#INICIO
+#---------------------------------------------------------------------------------------
 
+#Importar Librerias
 import sqlite3
+import datetime as dt
+
+#---------------------------------------------------------------------------------------
+
+fecha = dt.datetime.now() #Fecha actual del sistema
+
+#---------------------------------------------------------------------------------------
+
+#Creacion base de datos local
+
+#---------------------------------------------------------------------------------------
 
 # Conexión a la base de datos
 conn = sqlite3.connect('data.db')
@@ -68,10 +82,12 @@ def menu_principal():
             usuario = input("\nIngrese nombre de usuario: ")
             contraseña = input("Ingrese contraseña: ")
             registrar_usuario(usuario, contraseña)
+            
         elif opcion == "2":
             usuario = input("\nIngrese nombre de usuario: ")
             contraseña = input("Ingrese contraseña: ")
             inicio_exitoso = iniciar_sesion(usuario, contraseña)
+
             if inicio_exitoso:
                 break  # Salir del bucle si el inicio de sesión es exitoso
             else:
@@ -83,12 +99,18 @@ def menu_principal():
         elif opcion == "4":
             print("\nSaliendo del programa...")
             return False
+
         else:
             print("\nOpción no válida. Inténtelo de nuevo.")
 
     return True  # Indica que el inicio de sesión fue exitoso
 
-#Modulo para crear la agenda
+#---------------------------------------------------------------------------------------
+
+#Cracion de la clase para la agenda
 class Agenda:
     def ingresarDato():
         dato= None
+
+#---------------------------------------------------------------------------------------
+#FIN
