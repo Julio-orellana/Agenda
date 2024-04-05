@@ -7,6 +7,7 @@ COMANDOS BASICOS DE GIT
 3. git add . : Agrega todo en el directorio
 4. git pull : actualiza los archivos a las ultimas modificaciones del repositario
 5. git push : Sube los cambios locales al repositorio
+6. git commit -m "TU MENSAJE VA ACA" : Confirma los cambios y agrega una descripcion a los mismos
 
 --------------------------------------------------------------------------------------
 
