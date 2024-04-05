@@ -112,7 +112,7 @@ def menu_principal():
 #Cracion de la clase para la agenda
 class Agenda:
     #AQUI ADENTRO SE DEBE ESCRIBIR NUESTRO PROGRAMA
-    connect = sqlite3.connect('table.db')
+    connect = sqlite3.connect('agenda.db')
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS tareas (
             id INTEGER PRIMARY KEY,
