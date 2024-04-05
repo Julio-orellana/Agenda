@@ -1,13 +1,15 @@
 #INICIO
 #---------------------------------------------------------------------------------------
 
+#RECUERDEN NO UTILIZAR EL MISMO NOMBRE DE VARIABLES GLOBALES DE LOS MODULOS AGENDA O MAIN A MENOS QUE SE DESEE REESCRIBIR SU VALOR
+
 #Importar Librerias
 import sqlite3
 import datetime as dt
 
 #---------------------------------------------------------------------------------------
 
-fecha = dt.datetime.now() #Fecha actual del sistema
+date = dt.datetime.now() #Fecha actual del sistema
 
 #---------------------------------------------------------------------------------------
 
@@ -18,6 +20,7 @@ fecha = dt.datetime.now() #Fecha actual del sistema
 # Conexión a la base de datos
 conn = sqlite3.connect('data.db')
 cursor = conn.cursor()
+
 
 # Crear tabla si no existe
 cursor.execute('''CREATE TABLE IF NOT EXISTS data
@@ -87,7 +90,6 @@ def menu_principal():
             usuario = input("\nIngrese nombre de usuario: ")
             contraseña = input("Ingrese contraseña: ")
             inicio_exitoso = iniciar_sesion(usuario, contraseña)
-
             if inicio_exitoso:
                 break  # Salir del bucle si el inicio de sesión es exitoso
             else:
@@ -109,8 +111,17 @@ def menu_principal():
 
 #Cracion de la clase para la agenda
 class Agenda:
-    def ingresarDato():
-        dato= None
+    #AQUI ADENTRO SE DEBE ESCRIBIR NUESTRO PROGRAMA
+    connect = sqlite3.connect('table.db')
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS tareas (
+            id INTEGER PRIMARY KEY,
+            fecha TEXT,
+            tarea TEXT
+        )
+    ''')
+    def ingresarTarea(fecha, tarea):
+        print("Ingresando dato...\n")
 
 #---------------------------------------------------------------------------------------
 #FIN
