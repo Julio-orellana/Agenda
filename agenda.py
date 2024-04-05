@@ -27,5 +27,5 @@ def main():
 main()
 
 #---------------------------------------------------------------------------------------
-# Cerrar conexión
+# Cerrar conexión a la base de datos data
 conn.close()

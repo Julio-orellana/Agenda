@@ -17,7 +17,7 @@ date = dt.datetime.now() #Fecha actual del sistema
 
 #---------------------------------------------------------------------------------------
 
-# Conexión a la base de datos
+# Conexión a la base de datos data
 conn = sqlite3.connect('data.db')
 cursor = conn.cursor()
 
@@ -111,17 +111,27 @@ def menu_principal():
 
 #Cracion de la clase para la agenda
 class Agenda:
-    #AQUI ADENTRO SE DEBE ESCRIBIR NUESTRO PROGRAMA
+    #AQUI ADENTRO SE DEBE ESCRIBIR NUESTRO PROGRAMA!
+
+    #Conexion a la base de datos agenda
     connect = sqlite3.connect('agenda.db')
-    cursor.execute('''
+    newCursor = connect.cursor()
+
+    #Crear tabla si no existe
+    newCursor.execute('''
         CREATE TABLE IF NOT EXISTS tareas (
             id INTEGER PRIMARY KEY,
             fecha TEXT,
             tarea TEXT
         )
     ''')
-    def ingresarTarea(fecha, tarea):
+    connect.commit()
+
+    def ingresarTarea(id, fecha, tarea):
         print("Ingresando dato...\n")
+
+    #Cerrar conexion a la base de datos agenda
+    connect.close()
 
 #---------------------------------------------------------------------------------------
 #FIN
