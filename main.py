@@ -132,6 +132,6 @@ class Agenda:
 
     #Cerrar conexion a la base de datos agenda
     connect.close()
-#CAMBIOS DE RENE
+#CAMBIOS DE RENE 2
 #---------------------------------------------------------------------------------------
 #FIN
