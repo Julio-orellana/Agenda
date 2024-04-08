@@ -11,6 +11,7 @@ from main import *
 def main():
     flujo = True
     while True:
+        print("\n------------------------------------------------------------------")
         print(f"\n{date}")
         if not menu_principal():
             break  # Salir del bucle si el inicio de sesión no es exitoso
@@ -26,6 +27,7 @@ def main():
             if opcion == "1": #Opcion 1 ingresa una tarea a la agenda
 
                 Agenda.ingresarTarea()
+                flujo = False
                     
             else:
                 flujo = False
