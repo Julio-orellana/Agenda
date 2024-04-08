@@ -119,65 +119,72 @@ class Agenda:
 
     #Crear tabla si no existe
     newCursor.execute('''
-        CREATE TABLE IF NOT EXISTS tareas (
+        CREATE TABLE IF NOT EXISTS agenda (
             id INTEGER PRIMARY KEY,
-            fecha INTEGER,
+            fecha TEXT,
             tarea TEXT
         )
     ''')
     connect.commit()
 
-    def ingresarTarea():#Funcion para ingresar una nueva tarea
-        #Funcion para ingresar los valores 
-        def ingresarDato(identificador= None, fecha_tarea = None, tarea = None):
-            global id, fecha, task #Otorgar valor global a los datos
+    def ingresarTarea():  # Función para ingresar una nueva tarea
 
-            while True: 
-                identificador = int(input("Ingrese un numero de ID para la tarea "))
+        connect #Conexion a la base de datos
 
-                while identificador == int and identificador != None:
-                    id = identificador
-                    continue
-                else: 
-                    identificador = int(input("Ingrese un ID en numeros para la tarea "))
+        # Función para ingresar los valores
+        def ingresarDato( identificador=None, 
+            fecha_tarea = {
+                    "day": None,
+                    "month": None,
+                    "year": None
+                },
+                 tarea=None):
 
-                fecha_tarea = {
-                        "day": int(input("Ingrese el dia para la tarea: ")),
-                        "month": int(input("Ingrese el mes para la tarea: ")),
-                        "year": int(input("Ingrese el año para la tarea: "))
-                        }
-
-                while fecha_tarea["day"] != None and fecha_tarea["month"] != None and fecha_tarea["year"]!= None:
-                    fecha = fecha_tarea["day"] + "/"  + fecha_tarea["month"] + "/" + fecha_tarea["year"]
+            global id, fecha, task  # Otorgar valor global a los datos
+            code = True
+            while code:
+                if identificador is None:
+                    identificador = int(input("Ingrese un numero de ID para la tarea: "))
                     continue
                 else:
+                    id = identificador
+
+                if fecha_tarea["day"] is None or fecha_tarea["month"] is None or fecha_tarea["year"] is None:
+                    dia =  input("\nIngrese el día de la tarea [1-31]: ")
+                    mes =  input("Ingrese el mes de la tarea [1-12] : ")
+                    año =  input("Ingrese el año de la tarea: ")
                     fecha_tarea = {
-                        "day": int(input("Ingrese el dia para la tarea: ")),
-                        "month": int(input("Ingrese el mes para la tarea: ")),
-                        "year": int(input("Ingrese el año para la tarea: "))
-                        }
+                        "day": dia,
+                        "month": mes,
+                        "year": año
+                    }
+                    continue
+                else:
+                    fecha = fecha_tarea["day"] + "/" + fecha_tarea["month"] + "/" + fecha_tarea["year"]
 
-                tarea = input("Ingrese la descripción de la tarea: ")
-
-                while tarea != None:
+                if tarea is None:
+                    tarea = input("Ingrese la descripción de la tarea: ")
                     task = tarea
+                    code = False
                     return True
 
-                else: 
-                    task = False
-                    return False
-    
         if ingresarDato():
-            print("Ingresando tarea...\n")
-            newCursor.execute('INSERT INTO agenda (id, fecha, tarea) VALUES (?, ?, )',
+            print("\nIngresando tarea...")
+            newCursor.execute('INSERT INTO agenda (id, fecha, tarea) VALUES (?, ?, ?)',
                    (id, fecha, task))
             connect.commit()
+            print('\nTarea guardada correctamente.\n')
+            op = input("Desea visualizar la tarea? S/N: ").lower()
+            if op == "s":
+                print("\n------------------------------------------------------------------")
+                print(f"\nFecha de la tarea: {fecha}\nID: {id}\nDescripcion: {task}")
+        connect.close()#Cerrar la conexion a la base de datos
 
-        
+
+    def eliminarTarea(): #Funcion para eliminar una tarea
+        connect #Conectar a la base de datos
         
 
-    #Cerrar conexion a la base de datos agenda
-    connect.close()
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------
 #FIN
