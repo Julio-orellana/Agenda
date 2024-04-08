@@ -1,5 +1,5 @@
 #INICIO
-#---------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------
 
 #RECUERDEN NO UTILIZAR EL MISMO NOMBRE DE VARIABLES GLOBALES DE LOS MODULOS AGENDA O MAIN A MENOS QUE SE DESEE REESCRIBIR SU VALOR
 
@@ -7,15 +7,15 @@
 import sqlite3
 import datetime as dt
 
-#---------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------
 
 date = dt.datetime.now() #Fecha actual del sistema
 
-#---------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------
 
 #Creacion base de datos local
 
-#---------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------
 
 # Conexión a la base de datos data
 conn = sqlite3.connect('data.db')
@@ -107,12 +107,12 @@ def menu_principal():
 
     return True  # Indica que el inicio de sesión fue exitoso
 
-#---------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------
 
 #Cracion de la clase para la agenda
 class Agenda:
     #AQUI ADENTRO SE DEBE ESCRIBIR NUESTRO PROGRAMA!
-
+    global newCursor, connect
     #Conexion a la base de datos agenda
     connect = sqlite3.connect('agenda.db')
     newCursor = connect.cursor()
@@ -121,17 +121,63 @@ class Agenda:
     newCursor.execute('''
         CREATE TABLE IF NOT EXISTS tareas (
             id INTEGER PRIMARY KEY,
-            fecha TEXT,
+            fecha INTEGER,
             tarea TEXT
         )
     ''')
     connect.commit()
 
-    def ingresarTarea(id, fecha, tarea):
-        print("Ingresando dato...\n")
+    def ingresarTarea():#Funcion para ingresar una nueva tarea
+        #Funcion para ingresar los valores 
+        def ingresarDato(identificador= None, fecha_tarea = None, tarea = None):
+            global id, fecha, task #Otorgar valor global a los datos
+
+            while True: 
+                identificador = int(input("Ingrese un numero de ID para la tarea "))
+
+                while identificador == int and identificador != None:
+                    id = identificador
+                    continue
+                else: 
+                    identificador = int(input("Ingrese un ID en numeros para la tarea "))
+
+                fecha_tarea = {
+                        "day": int(input("Ingrese el dia para la tarea: ")),
+                        "month": int(input("Ingrese el mes para la tarea: ")),
+                        "year": int(input("Ingrese el año para la tarea: "))
+                        }
+
+                while fecha_tarea["day"] != None and fecha_tarea["month"] != None and fecha_tarea["year"]!= None:
+                    fecha = fecha_tarea["day"] + "/"  + fecha_tarea["month"] + "/" + fecha_tarea["year"]
+                    continue
+                else:
+                    fecha_tarea = {
+                        "day": int(input("Ingrese el dia para la tarea: ")),
+                        "month": int(input("Ingrese el mes para la tarea: ")),
+                        "year": int(input("Ingrese el año para la tarea: "))
+                        }
+
+                tarea = input("Ingrese la descripción de la tarea: ")
+
+                while tarea != None:
+                    task = tarea
+                    return True
+
+                else: 
+                    task = False
+                    return False
+    
+        if ingresarDato():
+            print("Ingresando tarea...\n")
+            newCursor.execute('INSERT INTO agenda (id, fecha, tarea) VALUES (?, ?, )',
+                   (id, fecha, task))
+            connect.commit()
+
+        
+        
 
     #Cerrar conexion a la base de datos agenda
     connect.close()
-#CAMBIOS DE JULIO
-#---------------------------------------------------------------------------------------
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------
 #FIN

@@ -11,6 +11,7 @@ from main import *
 def main():
     flujo = True
     while True:
+        print(f"\n{date}")
         if not menu_principal():
             break  # Salir del bucle si el inicio de sesión no es exitoso
         print('''''')# Se deben imprimir las posibles opciones de la agenda
