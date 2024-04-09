@@ -100,8 +100,9 @@ def menu_principal():
             eliminar_usuario(usuario)
         elif opcion == "4":
             print("\nSaliendo del programa...")
+            conn.close()
             return False
-
+            
         else:
             print("\nOpción no válida. Inténtelo de nuevo.")
 
@@ -112,24 +113,20 @@ def menu_principal():
 #Cracion de la clase para la agenda
 class Agenda:
     #AQUI ADENTRO SE DEBE ESCRIBIR NUESTRO PROGRAMA!
-    global newCursor, connect
-    #Conexion a la base de datos agenda
-    connect = sqlite3.connect('agenda.db')
-    newCursor = connect.cursor()
 
     #Crear tabla si no existe
-    newCursor.execute('''
+    cursor.execute('''
         CREATE TABLE IF NOT EXISTS agenda (
             id INTEGER PRIMARY KEY,
             fecha TEXT,
             tarea TEXT
         )
     ''')
-    connect.commit()
+    conn.commit()
 
     def ingresarTarea():  # Función para ingresar una nueva tarea
 
-        connect #Conexion a la base de datos
+        conn #Conexion a la base de datos
 
         # Función para ingresar los valores
         def ingresarDato( identificador=None, 
@@ -170,19 +167,19 @@ class Agenda:
 
         if ingresarDato():
             print("\nIngresando tarea...")
-            newCursor.execute('INSERT INTO agenda (id, fecha, tarea) VALUES (?, ?, ?)',
+            cursor.execute('INSERT INTO agenda (id, fecha, tarea) VALUES (?, ?, ?)',
                    (id, fecha, task))
-            connect.commit()
+            conn.commit()
             print('\nTarea guardada correctamente.\n')
             op = input("Desea visualizar la tarea? S/N: ").lower()
             if op == "s":
                 print("\n------------------------------------------------------------------")
                 print(f"\nFecha de la tarea: {fecha}\nID: {id}\nDescripcion: {task}")
-        connect.close()#Cerrar la conexion a la base de datos
+        conn.close()#Cerrar la conexion a la base de datos
 
 
     def eliminarTarea(): #Funcion para eliminar una tarea
-        connect #Conectar a la base de datos
+        conn #Conectar a la base de datos
         
 
 
