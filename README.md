@@ -13,7 +13,7 @@ COMANDOS BASICOS DE GIT
 
 Vamos a trabajar el programa de Agenda dentro de la clase Agenda en el modulo main.py
 
-Si saben usar bases de datos pueden enviar el data directamente a el almacenamiento local "agenda", si no, almacenen el input dentro de una variable (lista, cadena, diccionario).
+Si saben usar bases de datos pueden hacer la actualizacion de datos directamente a la tabla agenda en el almacenamiento local "data", si no, almacenen el input dentro de una variable (lista, cadena, diccionario).
 
 Recuerden documentar su parte del codigo y si es posible explicar cada commit :)
 
