@@ -17,7 +17,7 @@ date = dt.datetime.now() #Fecha actual del sistema
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------
 
-# Conexión a la base de datos data
+# Crear conexion a la base de datos data
 conn = sqlite3.connect('data.db')
 cursor = conn.cursor()
 
@@ -111,6 +111,9 @@ def menu_principal():
 #-----------------------------------------------------------------------------------------------------------------------------------------------
 
 #Cracion de la clase para la agenda
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------
+
 class Agenda:
     #AQUI ADENTRO SE DEBE ESCRIBIR NUESTRO PROGRAMA!
 
@@ -126,17 +129,8 @@ class Agenda:
 
     def ingresarTarea():  # Función para ingresar una nueva tarea
 
-        conn #Conexion a la base de datos
-
         # Función para ingresar los valores
-        def ingresarDato( identificador=None, 
-            fecha_tarea = {
-                    "day": None,
-                    "month": None,
-                    "year": None
-                },
-                 tarea=None):
-
+        def ingresarDato(identificador=None, fecha_tarea=None, tarea=None):
             global id, fecha, task  # Otorgar valor global a los datos
             code = True
             while code:
@@ -146,10 +140,10 @@ class Agenda:
                 else:
                     id = identificador
 
-                if fecha_tarea["day"] is None or fecha_tarea["month"] is None or fecha_tarea["year"] is None:
-                    dia =  input("\nIngrese el día de la tarea [1-31]: ")
-                    mes =  input("Ingrese el mes de la tarea [1-12] : ")
-                    año =  input("Ingrese el año de la tarea: ")
+                if fecha_tarea is None:
+                    dia = input("\nIngrese el día de la tarea [1-31]: ")
+                    mes = input("Ingrese el mes de la tarea [1-12] : ")
+                    año = input("Ingrese el año de la tarea: ")
                     fecha_tarea = {
                         "day": dia,
                         "month": mes,
@@ -165,23 +159,226 @@ class Agenda:
                     code = False
                     return True
 
-        if ingresarDato():
+        if ingresarDato():  # Si la funcion ingresarDato() retorna True, se ejecuta el codigo
+
             print("\nIngresando tarea...")
             cursor.execute('INSERT INTO agenda (id, fecha, tarea) VALUES (?, ?, ?)',
-                   (id, fecha, task))
+                        (id, fecha, task))
             conn.commit()
             print('\nTarea guardada correctamente.\n')
             op = input("Desea visualizar la tarea? S/N: ").lower()
             if op == "s":
                 print("\n------------------------------------------------------------------")
                 print(f"\nFecha de la tarea: {fecha}\nID: {id}\nDescripcion: {task}")
-        conn.close()#Cerrar la conexion a la base de datos
+        conn.close()  # Cerrar la conexion a la base de datos
 
 
-    def eliminarTarea(): #Funcion para eliminar una tarea
-        conn #Conectar a la base de datos
-        
+    def eliminarTareaPorID():#Funcion para eliminar una tarea por ID
+        conn #Conexion a la base de datos
+    
+        # Pedir el ID de la tarea a eliminar
+        eliminarId = int(input("Ingrese el ID de la tarea que desea eliminar: "))
+        cursor.execute('SELECT * FROM agenda WHERE id=?', (eliminarId,))
+        verificarId = cursor.fetchone()
+        if verificarId:
+            cursor.execute('DELETE FROM agenda WHERE id=?', (eliminarId,))
+            conn.commit()
+            print("Tarea eliminada correctamente.")
+            conn.close()
+        # Si no se encuentra la tarea
+        else:
+            print("No se ha encontrado la tarea.")
+            conn.close()  # Cerrar la conexion a la base de datos
 
+    def buscarTareaPorID():#Funcion para buscar una tarea por ID en la tabla agenda
+        conn #Conexion a la base de datos
+
+        # Pedir el ID de la tarea a buscar
+        buscarId = int(input("Ingrese el ID de la tarea que desea buscar: "))
+        cursor.execute('SELECT * FROM agenda WHERE id=?', (buscarId,))
+        tareaEncontrada = cursor.fetchone()
+        if tareaEncontrada:
+            fecha = tareaEncontrada[1]
+            descripcion = tareaEncontrada[2]
+            print("\n------------------------------------------------------------------")
+            print(f"\nFecha de la tarea: {fecha}\nID: {buscarId}\nDescripcion: {descripcion}")
+        else:
+            print("No se ha encontrado la tarea.")
+
+        conn.close() # Cerrar la conexion a la base de datos
+
+    def desplegarTareas():#Funcion para mostrar todas las tareas de la tabla agenda
+        conn #Conexion a la base de datos
+    
+        cursor.execute('SELECT * FROM agenda')
+        tareas = cursor.fetchall()
+
+        if len(tareas) > 0:
+            print("\nListado de Tareas:")
+            print("------------------------------------------------------------------")
+            for tarea in tareas:
+                fecha = tarea[1]
+                descripcion = tarea[2]
+                print(f"\nFecha de la tarea: {fecha}\nID: {tarea[0]}\nDescripcion: {descripcion}")
+                print("------------------------------------------------------------------")
+        else:
+            print("\nNo hay tareas registradas.")
+
+            conn.close()  # Cerrar la conexion a la base de datos
+
+    def buscarTareasPorFecha():
+        conn
+        # Solicitar al usuario la fecha para buscar tareas
+        dia = input("Ingrese el día de la tarea [1-31]: ")
+        mes = input("Ingrese el mes de la tarea [1-12]: ")
+        año = input("Ingrese el año de la tarea: ")
+        fecha_buscada = f"{dia}/{mes}/{año}"
+
+        cursor.execute('SELECT * FROM agenda WHERE fecha=?', (fecha_buscada,))
+        tareas_encontradas = cursor.fetchall()
+
+        if len(tareas_encontradas) > 0:
+            print("\nTareas encontradas para la fecha buscada:")
+            print("------------------------------------------------------------------")
+            for tarea in tareas_encontradas:
+                fecha = tarea[1]
+                descripcion = tarea[2]
+                print(f"\nFecha de la tarea: {fecha}\nID: {tarea[0]}\nDescripcion: {descripcion}")
+                print("------------------------------------------------------------------")
+        else:
+            print("\nNo se encontraron tareas para la fecha buscada.")
+
+        conn.close()  # Cerrar la conexión a la base de datos
+
+    def modificarTarea():
+        conn
+        # Solicitar al usuario el ID de la tarea a modificar
+        id_tarea = int(input("Ingrese el ID de la tarea que desea modificar: "))
+
+        cursor.execute('SELECT * FROM agenda WHERE id=?', (id_tarea,))
+        tarea_existente = cursor.fetchone()
+
+        if tarea_existente:
+            nueva_fecha = input("Ingrese la nueva fecha de la tarea (DD/MM/AAAA): ")
+            nueva_descripcion = input("Ingrese la nueva descripción de la tarea: ")
+
+            cursor.execute('UPDATE agenda SET fecha=?, tarea=? WHERE id=?', (nueva_fecha, nueva_descripcion, id_tarea))
+            conn.commit()
+            print("Tarea modificada correctamente.")
+        else:
+            print("No se encontró la tarea.")
+
+        conn.close()  # Cerrar la conexión a la base de datos
+
+    def buscarTareaPorDescripcion():
+        conn
+        # Solicitar al usuario la descripción para buscar tareas
+        descripcion_buscada = input("Ingrese la descripción de la tarea que desea buscar: ")
+
+        cursor.execute('SELECT * FROM agenda WHERE tarea LIKE ?', ('%' + descripcion_buscada + '%',))
+        tareas_encontradas = cursor.fetchall()
+
+        if len(tareas_encontradas) > 0:
+            print("\nTareas encontradas para la descripción buscada:")
+            print("------------------------------------------------------------------")
+            for tarea in tareas_encontradas:
+                fecha = tarea[1]
+                descripcion = tarea[2]
+                print(f"\nFecha de la tarea: {fecha}\nID: {tarea[0]}\nDescripcion: {descripcion}")
+                print("------------------------------------------------------------------")
+        else:
+            print("\nNo se encontraron tareas para la descripción buscada.")
+
+        conn.close()  # Cerrar la conexión a la base de datos
+
+    def tareasPendientes():
+        conn
+        cursor.execute('SELECT * FROM agenda WHERE completada=0')
+        tareas_pendientes = cursor.fetchall()
+
+        if len(tareas_pendientes) > 0:
+            print("\nTareas Pendientes:")
+            print("------------------------------------------------------------------")
+            for tarea in tareas_pendientes:
+                fecha = tarea[1]
+                descripcion = tarea[2]
+                print(f"\nFecha de la tarea: {fecha}\nID: {tarea[0]}\nDescripcion: {descripcion}")
+                print("------------------------------------------------------------------")
+        else:
+            print("\nNo hay tareas pendientes.")
+
+        conn.close()  # Cerrar la conexión a la base de datos
+
+    def marcarTareaCompleta():
+        conn
+        # Solicitar al usuario el ID de la tarea a marcar como completada
+        id_tarea = int(input("Ingrese el ID de la tarea que desea marcar como completada: "))
+
+        cursor.execute('SELECT * FROM agenda WHERE id=?', (id_tarea,))
+        tarea_existente = cursor.fetchone()
+
+        if tarea_existente:
+            cursor.execute('UPDATE agenda SET completada=1 WHERE id=?', (id_tarea,))
+            conn.commit()
+            print("Tarea marcada como completada.")
+        else:
+            print("No se encontró la tarea.")
+
+        conn.close()  # Cerrar la conexión a la base de datos
+
+    def desplegarTareasPendientes():
+        conn
+
+        cursor.execute('SELECT * FROM agenda WHERE completada=0')
+        tareas_pendientes = cursor.fetchall()
+
+        if len(tareas_pendientes) > 0:
+            print("\nTareas Pendientes:")
+            print("------------------------------------------------------------------")
+            for tarea in tareas_pendientes:
+                fecha = tarea[1]
+                descripcion = tarea[2]
+                print(f"\nFecha de la tarea: {fecha}\nID: {tarea[0]}\nDescripcion: {descripcion}")
+                print("------------------------------------------------------------------")
+        else:
+            print("\nNo hay tareas pendientes.")
+
+        conn.close()  # Cerrar la conexión a la base de datos
+
+    def desplegarTareasCompletadas():
+        conn
+        cursor.execute('SELECT * FROM agenda WHERE completada=1')
+        tareas_completadas = cursor.fetchall()
+
+        if len(tareas_completadas) > 0:
+            print("\nTareas Completadas:")
+            print("------------------------------------------------------------------")
+            for tarea in tareas_completadas:
+                fecha = tarea[1]
+                descripcion = tarea[2]
+                print(f"\nFecha de la tarea: {fecha}\nID: {tarea[0]}\nDescripcion: {descripcion}")
+                print("------------------------------------------------------------------")
+        else:
+            print("\nNo hay tareas completadas.")
+
+        conn.close()  # Cerrar la conexión a la base de datos
+
+    def marcarTareaIncompleta():
+        conn
+        # Solicitar al usuario el ID de la tarea a marcar como incompleta
+        id_tarea = int(input("Ingrese el ID de la tarea que desea marcar como incompleta: "))
+
+        cursor.execute('SELECT * FROM agenda WHERE id=?', (id_tarea,))
+        tarea_existente = cursor.fetchone()
+
+        if tarea_existente:
+            cursor.execute('UPDATE agenda SET completada=0 WHERE id=?', (id_tarea,))
+            conn.commit()
+            print("Tarea marcada como incompleta.")
+        else:
+            print("No se encontró la tarea.")
+
+        conn.close()  # Cerrar la conexión a la base de datos
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------
 #FIN
