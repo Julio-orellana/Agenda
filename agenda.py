@@ -17,10 +17,9 @@ def main():
             break  # Salir del bucle si el inicio de sesión no es exitoso
         print('''
                 1. Ingresar tareas a la agenda
-                2. Eliminar una tarea de la agenda
-                3. Buscar tarea por id
-                4. Listar todas las tareas de la agenda
-                5. Actualizar una tarea en la agenda
+                2. Buscar tarea por id
+                3. Listar todas las tareas de la agenda
+                4. Actualizar una tarea en la agenda
                 ''')# Se deben imprimir las posibles opciones de la agenda
         opcion = input("Ingrese una opcion: ")
         while flujo:
@@ -28,7 +27,16 @@ def main():
 
                 Agenda.ingresarTarea()
                 flujo = False
-                    
+
+            elif opcion == "2": #Opcion 2 buscar tarera por id
+
+                Agenda.buscarTareaPorID()
+                flujo = False
+
+            elif opcion == "3": #Opcion 3 listar todas las tareas de la agenda
+
+                Agenda.desplegarTareas()
+
             else:
                 flujo = False
                 
